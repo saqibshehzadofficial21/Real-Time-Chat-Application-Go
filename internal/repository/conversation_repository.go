@@ -1,22 +1,24 @@
 package repository
 
-import "database/sql"
+import (
+    "chat-app/internal/models"
+    "gorm.io/gorm"
+)
 
 type ConversationRepository interface {
-    Create(isGroup bool) (int, error)
+    Create(isGroup bool) (*models.Conversation, error)
 }
 
 type conversationRepo struct {
-    db *sql.DB
+    db *gorm.DB
 }
 
-func NewConversationRepository(db *sql.DB) ConversationRepository {
+func NewConversationRepository(db *gorm.DB) ConversationRepository {
     return &conversationRepo{db: db}
 }
 
-func (r *conversationRepo) Create(isGroup bool) (int, error) {
-    var id int
-    query := `INSERT INTO conversations (is_group) VALUES ($1) RETURNING id`
-    err := r.db.QueryRow(query, isGroup).Scan(&id)
-    return id, err
+func (r *conversationRepo) Create(isGroup bool) (*models.Conversation, error) {
+    conv := &models.Conversation{IsGroup: isGroup}
+    err := r.db.Create(conv).Error
+    return conv, err
 }

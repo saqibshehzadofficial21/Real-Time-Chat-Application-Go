@@ -11,10 +11,11 @@ type Config struct {
     DBUser     string
     DBPassword string
     DBName     string
+    JWTSecret  string
 }
 
 func LoadConfig() *Config {
-    godotenv.Load() // .env file read karta hai
+    godotenv.Load()
 
     return &Config{
         DBHost:     os.Getenv("DB_HOST"),
@@ -22,5 +23,6 @@ func LoadConfig() *Config {
         DBUser:     os.Getenv("DB_USER"),
         DBPassword: os.Getenv("DB_PASSWORD"),
         DBName:     os.Getenv("DB_NAME"),
+        JWTSecret:  os.Getenv("JWT_SECRET"),
     }
 }
