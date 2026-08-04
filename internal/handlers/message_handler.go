@@ -28,11 +28,11 @@ func (h *MessageHandler) SendMessage(c *gin.Context) {
         return
     }
 
-    senderID := c.GetInt("userID") // middleware se aayega baad mein
+    senderID := c.GetInt("userID")
 
     msg, err := h.service.SendMessage(req.ConversationID, senderID, req.Content)
     if err != nil {
-        c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+        c.JSON(http.StatusForbidden, gin.H{"error": err.Error()})
         return
     }
 
@@ -47,9 +47,11 @@ func (h *MessageHandler) GetMessages(c *gin.Context) {
         return
     }
 
-    messages, err := h.service.GetConversationMessages(convID)
+    requesterID := c.GetInt("userID")
+
+    messages, err := h.service.GetConversationMessages(convID, requesterID)
     if err != nil {
-        c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+        c.JSON(http.StatusForbidden, gin.H{"error": err.Error()})
         return
     }
 

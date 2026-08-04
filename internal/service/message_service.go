@@ -9,7 +9,7 @@ import (
 
 type MessageService interface {
     SendMessage(convID, senderID int, content string) (*models.Message, error)
-    GetConversationMessages(convID int) ([]models.Message, error)
+    GetConversationMessages(convID, requesterID int) ([]models.Message, error)
 }
 
 type messageService struct {
@@ -25,6 +25,15 @@ func (s *messageService) SendMessage(convID, senderID int, content string) (*mod
         return nil, errors.New("message content cannot be empty")
     }
 
+    // Authorization check: kya sender is conversation ka member hai?
+    isMember, err := s.repo.IsParticipant(convID, senderID)
+    if err != nil {
+        return nil, err
+    }
+    if !isMember {
+        return nil, errors.New("you are not a participant of this conversation")
+    }
+
     msg := &models.Message{
         ConversationID: convID,
         SenderID:       senderID,
@@ -37,6 +46,15 @@ func (s *messageService) SendMessage(convID, senderID int, content string) (*mod
     return msg, nil
 }
 
-func (s *messageService) GetConversationMessages(convID int) ([]models.Message, error) {
+func (s *messageService) GetConversationMessages(convID, requesterID int) ([]models.Message, error) {
+    // Authorization check: kya requester is conversation ka member hai?
+    isMember, err := s.repo.IsParticipant(convID, requesterID)
+    if err != nil {
+        return nil, err
+    }
+    if !isMember {
+        return nil, errors.New("you are not a participant of this conversation")
+    }
+
     return s.repo.GetByConversationID(convID)
 }
