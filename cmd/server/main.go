@@ -1,15 +1,29 @@
+
+
 package main
 
 import (
     "log"
+
     "chat-app/internal/config"
     "chat-app/internal/db"
-    "chat-app/internal/handlers"
     "chat-app/internal/models"
-    "chat-app/internal/repository"
     "chat-app/internal/routes"
-    "chat-app/internal/service"
     "chat-app/pkg/utils"
+
+    authH "chat-app/internal/handlers/auth"
+    friendH "chat-app/internal/handlers/friend"
+    messageH "chat-app/internal/handlers/message"
+    userH "chat-app/internal/handlers/user"
+
+    authSvc "chat-app/internal/service/auth"
+    friendSvc "chat-app/internal/service/friend"
+    messageSvc "chat-app/internal/service/message"
+    userSvc "chat-app/internal/service/user"
+
+    friendRepo "chat-app/internal/repository/friend"
+    messageRepo "chat-app/internal/repository/message"
+    userRepo "chat-app/internal/repository/user"
 )
 
 func main() {
@@ -32,21 +46,24 @@ func main() {
     }
     log.Println("Database connected and migrated successfully")
 
-    userRepo := repository.NewUserRepository(dbConn)
-    msgRepo := repository.NewMessageRepository(dbConn)
-    friendRepo := repository.NewFriendRepository(dbConn)
+    // Repository layer
+    uRepo := userRepo.NewUserRepository(dbConn)
+    mRepo := messageRepo.NewMessageRepository(dbConn)
+    fRepo := friendRepo.NewFriendRepository(dbConn)
 
-    userService := service.NewUserService(userRepo)
-    authService := service.NewAuthService(userRepo)
-    msgService := service.NewMessageService(msgRepo)
-    friendService := service.NewFriendService(friendRepo)
+    // Service layer
+    uService := userSvc.NewUserService(uRepo)
+    aService := authSvc.NewAuthService(uRepo)
+    mService := messageSvc.NewMessageService(mRepo)
+    fService := friendSvc.NewFriendService(fRepo)
 
-    userHandler := handlers.NewUserHandler(userService)
-    authHandler := handlers.NewAuthHandler(authService)
-    msgHandler := handlers.NewMessageHandler(msgService)
-    friendHandler := handlers.NewFriendHandler(friendService)
+    // Handler layer
+    uHandler := userH.NewUserHandler(uService)
+    aHandler := authH.NewAuthHandler(aService)
+    mHandler := messageH.NewMessageHandler(mService)
+    fHandler := friendH.NewFriendHandler(fService)
 
-    router := routes.SetupRoutes(authHandler, userHandler, msgHandler, friendHandler)
+    router := routes.SetupRoutes(aHandler, uHandler, mHandler, fHandler)
 
     log.Println("Server running on :8080")
     router.Run(":8080")

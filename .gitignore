@@ -1,0 +1,82 @@
+# ======================
+# Go build files
+# ======================
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+
+# Binary output folders
+bin/
+build/
+dist/
+
+# ======================
+# Go modules
+# ======================
+vendor/
+
+# ======================
+# Environment files (IMPORTANT)
+# ======================
+.env
+.env.local
+.env.*.local
+
+# ======================
+# Logs
+# ======================
+*.log
+logs/
+tmp/
+
+# ======================
+# Database (PostgreSQL)
+# ======================
+*.sql
+*.db
+*.sqlite
+
+# Migrations (optional - if auto-generated)
+migrations/*.tmp
+
+# ======================
+# Docker
+# ======================
+docker-compose.override.yml
+*.pid
+
+# ======================
+# Kubernetes
+# ======================
+*.secret.yaml
+kubeconfig*
+*.key
+*.crt
+
+# ======================
+# OS files
+# ======================
+.DS_Store
+Thumbs.db
+
+# ======================
+# IDE / Editor
+# ======================
+.vscode/
+.idea/
+
+# ======================
+# Test coverage
+# ======================
+coverage.out
+coverage.html
+
+# ======================
+# Misc
+# ======================
+*.swp
+*.bak
