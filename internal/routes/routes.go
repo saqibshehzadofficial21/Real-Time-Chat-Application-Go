@@ -1,29 +1,34 @@
+
+
 package routes
 
 import (
-    "chat-app/internal/handlers"
+    authH "chat-app/internal/handlers/auth"
+    friendH "chat-app/internal/handlers/friend"
+    messageH "chat-app/internal/handlers/message"
+    userH "chat-app/internal/handlers/user"
     "chat-app/internal/middleware"
     "github.com/gin-gonic/gin"
 )
 
-func SetupRoutes(authH *handlers.AuthHandler, userH *handlers.UserHandler, msgH *handlers.MessageHandler, friendH *handlers.FriendHandler) *gin.Engine {
+func SetupRoutes(auth *authH.AuthHandler, user *userH.UserHandler, msg *messageH.MessageHandler, friend *friendH.FriendHandler) *gin.Engine {
     router := gin.Default()
 
     api := router.Group("/api")
     {
-        api.POST("/register", userH.Register)
-        api.POST("/login", authH.Login)
+        api.POST("/register", user.Register)
+        api.POST("/login", auth.Login)
 
         protected := api.Group("/")
         protected.Use(middleware.AuthMiddleware())
         {
-            protected.POST("/messages", msgH.SendMessage)
-            protected.GET("/conversations/:id/messages", msgH.GetMessages)
+            protected.POST("/messages", msg.SendMessage)
+            protected.GET("/conversations/:id/messages", msg.GetMessages)
 
-            protected.POST("/friend-requests", friendH.SendRequest)
-            protected.POST("/friend-requests/:id/accept", friendH.AcceptRequest)
-            protected.POST("/friend-requests/:id/reject", friendH.RejectRequest)
-            protected.GET("/friend-requests/pending", friendH.ListPending)
+            protected.POST("/friend-requests", friend.SendRequest)
+            protected.POST("/friend-requests/:id/accept", friend.AcceptRequest)
+            protected.POST("/friend-requests/:id/reject", friend.RejectRequest)
+            protected.GET("/friend-requests/pending", friend.ListPending)
         }
     }
 

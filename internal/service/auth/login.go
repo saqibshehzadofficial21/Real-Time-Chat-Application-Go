@@ -1,25 +1,13 @@
-package service
+package auth
 
 import (
     "errors"
     "chat-app/internal/models"
-    "chat-app/internal/repository"
     "chat-app/pkg/utils"
     "golang.org/x/crypto/bcrypt"
 )
 
-type AuthService interface {
-    Login(email, password string) (string, *models.User, error)
-}
-
-type authService struct {
-    repo repository.UserRepository
-}
-
-func NewAuthService(repo repository.UserRepository) AuthService {
-    return &authService{repo: repo}
-}
-
+// Login email/password verify karta hai aur success par JWT token deta hai
 func (s *authService) Login(email, password string) (string, *models.User, error) {
     user, err := s.repo.GetByEmail(email)
     if err != nil {

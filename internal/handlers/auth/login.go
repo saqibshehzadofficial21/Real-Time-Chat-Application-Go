@@ -1,27 +1,13 @@
-package handlers
+package auth
 
 import (
     "net/http"
-    "chat-app/internal/service"
     "github.com/gin-gonic/gin"
 )
 
-type AuthHandler struct {
-    service service.AuthService
-}
-
-func NewAuthHandler(s service.AuthService) *AuthHandler {
-    return &AuthHandler{service: s}
-}
-
-type loginRequest struct {
-    Email    string `json:"email" binding:"required,email"`
-    Password string `json:"password" binding:"required"`
-}
-
+// Login POST /api/login ko handle karta hai
 func (h *AuthHandler) Login(c *gin.Context) {
     var req loginRequest
-
     if err := c.ShouldBindJSON(&req); err != nil {
         c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
         return
@@ -33,8 +19,5 @@ func (h *AuthHandler) Login(c *gin.Context) {
         return
     }
 
-    c.JSON(http.StatusOK, gin.H{
-        "token": token,
-        "user":  user,
-    })
+    c.JSON(http.StatusOK, gin.H{"token": token, "user": user})
 }
