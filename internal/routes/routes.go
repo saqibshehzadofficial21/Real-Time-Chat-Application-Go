@@ -1,17 +1,17 @@
-
-
 package routes
 
 import (
     authH "chat-app/internal/handlers/auth"
     friendH "chat-app/internal/handlers/friend"
+    groupH "chat-app/internal/handlers/group"
     messageH "chat-app/internal/handlers/message"
     userH "chat-app/internal/handlers/user"
+    wsH "chat-app/internal/handlers/websocket"
     "chat-app/internal/middleware"
     "github.com/gin-gonic/gin"
 )
 
-func SetupRoutes(auth *authH.AuthHandler, user *userH.UserHandler, msg *messageH.MessageHandler, friend *friendH.FriendHandler) *gin.Engine {
+func SetupRoutes(auth *authH.AuthHandler, user *userH.UserHandler, msg *messageH.MessageHandler, friend *friendH.FriendHandler, group *groupH.GroupHandler, ws *wsH.WSHandler) *gin.Engine {
     router := gin.Default()
 
     api := router.Group("/api")
@@ -29,8 +29,12 @@ func SetupRoutes(auth *authH.AuthHandler, user *userH.UserHandler, msg *messageH
             protected.POST("/friend-requests/:id/accept", friend.AcceptRequest)
             protected.POST("/friend-requests/:id/reject", friend.RejectRequest)
             protected.GET("/friend-requests/pending", friend.ListPending)
+
+            protected.POST("/groups", group.CreateGroup)
         }
     }
+
+    router.GET("/ws", ws.Connect)
 
     return router
 }
