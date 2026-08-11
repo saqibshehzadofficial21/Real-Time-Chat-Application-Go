@@ -179,7 +179,7 @@ DB_PASSWORD=yourpassword
 DB_NAME=chatapp
 DB_SSLMODE=disable
 
-JWT_SECRET=your-super-secret-jwt-key-minimum-thirty-two-characters
+JWT_SECRET=super-secret-jwt-key-minimum-thirty-two-characters
 JWT_EXPIRY_HOURS=24
 
 SERVER_PORT=8080
@@ -449,13 +449,13 @@ For production deployments, the application can be deployed to a Kubernetes clus
 
 ## Author
 
-**Your Name**
+**Malik Saqib.**
 
 Full-Stack Developer specializing in backend systems, real-time applications, and cloud-native architectures.
 
-- GitHub: [github.com/yourusername](https://github.com/yourusername)
-- LinkedIn: [linkedin.com/in/yourprofile](https://linkedin.com/in/yourprofile)
-- Email: your.email@example.com
+- GitHub: [https://github.com/saqibshehzadofficial21](https://github.com/yourusername)
+- LinkedIn: [https://www.linkedin.com/in/saqib-shehzad-8258a4388/](https://linkedin.com/in/yourprofile)
+- Email: maliksaqiboffical12@gmail.com
 
 ---
 
