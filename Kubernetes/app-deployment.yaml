@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: chat-app-deployment
 spec:
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
       app: chat-app
@@ -49,3 +49,13 @@ spec:
                 secretKeyRef:
                   name: chat-app-secret
                   key: JWT_SECRET
+            - name: REDIS_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: chat-app-config
+                  key: REDIS_HOST
+            - name: REDIS_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: chat-app-config
+                  key: REDIS_PORT

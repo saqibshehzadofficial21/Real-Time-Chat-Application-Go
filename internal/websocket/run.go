@@ -1,6 +1,6 @@
 package websocket
 
-// Run Hub ka main loop hai — yeh hamesha ek alag goroutine mein chalta hai
+// Run Hub ka main loop hai
 func (h *Hub) Run() {
     for {
         select {
@@ -11,7 +11,9 @@ func (h *Hub) Run() {
             h.unregisterClient(client)
 
         case msg := <-h.Broadcast:
-            h.broadcastMessage(msg)
+            // Sirf Redis pe publish karo — ListenToRedis khud is pod ke
+            // local clients ko bhi deliver kar dega, chahe message kahin se aaya ho
+            h.publishToRedis(msg)
         }
     }
 }

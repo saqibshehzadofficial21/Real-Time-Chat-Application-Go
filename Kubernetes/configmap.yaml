@@ -7,3 +7,5 @@ data:
   DB_PORT: "5432"
   DB_USER: "postgres"
   DB_NAME: "chat_app"
+  REDIS_HOST: "redis-service"
+  REDIS_PORT: "6379"

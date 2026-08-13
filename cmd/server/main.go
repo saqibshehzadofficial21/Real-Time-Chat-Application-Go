@@ -6,6 +6,7 @@ import (
     "chat-app/internal/config"
     "chat-app/internal/db"
     "chat-app/internal/models"
+    myredis "chat-app/internal/redis"
     "chat-app/internal/routes"
     "chat-app/internal/websocket"
     "chat-app/pkg/utils"
@@ -46,6 +47,13 @@ func main() {
     }
     log.Println("Database connected and migrated successfully")
 
+    // Redis connect karein
+    redisClient := myredis.NewRedisClient(cfg.RedisHost, cfg.RedisPort)
+    if err := redisClient.Ping(myredis.Ctx).Err(); err != nil {
+        log.Fatal("Redis connection failed: ", err)
+    }
+    log.Println("Redis connected successfully")
+
     uRepo := userRepo.NewUserRepository(dbConn)
     mRepo := messageRepo.NewMessageRepository(dbConn)
     fRepo := friendRepo.NewFriendRepository(dbConn)
@@ -63,8 +71,11 @@ func main() {
     fHandler := friendH.NewFriendHandler(fService)
     gHandler := groupH.NewGroupHandler(gService)
 
-    hub := websocket.NewHub()
+    // Hub ab Redis client ke sath banega
+    hub := websocket.NewHub(redisClient)
     go hub.Run()
+    go hub.ListenToRedis() // Yeh background mein Redis sunta rahega
+
     wsHandler := wsH.NewWSHandler(hub, mService)
 
     router := routes.SetupRoutes(aHandler, uHandler, mHandler, fHandler, gHandler, wsHandler)
